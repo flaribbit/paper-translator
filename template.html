@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite App</title>
+  <style>
+    .col {
+      display: inline-block;
+      padding: 4px;
+      width: 50%;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    #app {
+      line-height: 1.4em;
+    }
+  </style>
+  <script type="module">
+    import data from './data.json'
+    const render_row = (row) => `<div class="row"><div class="col">${row.src}</div><div class="col">${row.dst}</div></div>`
+    document.querySelector('#app').innerHTML = data.map(render_row).join('')
+  </script>
+</head>
+
+<body>
+  <main id="app"></main>
+</body>
+
+</html>
