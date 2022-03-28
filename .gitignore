@@ -2,6 +2,10 @@ __pycache__
 venv
 *.pdf
 *.json
+*.html
 key.txt
 node_modules
 pnpm-lock.yaml
+
+!template.html
+!package.json

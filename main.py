@@ -1,9 +1,10 @@
+from typing import List
 from argparse import ArgumentParser
-parser = ArgumentParser(description='paper tool')
-parser.add_argument('-i', '--input', type=str, help='Input PDF file')
-parser.add_argument('--limit', type=int, default=6000)
-parser.add_argument('--delay', type=float, default=1)
-parser.add_argument('--full', action='store_true')
+parser = ArgumentParser(description='中英对照论文翻译工具')
+parser.add_argument('file', type=str, help='输入PDF文件')
+parser.add_argument('--limit', type=int, default=6000, help='单次翻译长度限制')
+parser.add_argument('--delay', type=float, default=1, help='等待时间')
+parser.add_argument('--full', action='store_true', help='包括参考文献')
 args = parser.parse_args()
 
 
@@ -32,23 +33,31 @@ def read_pdf(path: str):
     return res
 
 
+def write_html(title: str, data: List):
+    with open('./template.html') as f:
+        html = f.read()
+    json_string = json.dumps(data, ensure_ascii=False)
+    html = html.replace('<title></title>', f'<title>{title}</title>')
+    html = html.replace("import data from './data.json'", f"const data = {json_string}")
+    with open(title+'.html', 'w', encoding='utf-8') as f:
+        f.write(html)
+
+
 def main():
-    parts = read_pdf(args.input)
+    parts = read_pdf(args.file)
     res = []
     for i, text in enumerate(parts):
         print(f'translating {i+1}/{len(parts)}')
         r = baidu_translator(text)
         res += r['trans_result']
         time.sleep(args.delay)
-    out_filename = args.input.replace('.pdf', '.json')
-    with open(out_filename, 'w', encoding='utf-8') as f:
-        json.dump(res, f, ensure_ascii=False)
+    title = args.file.replace('.pdf', '')
+    write_html(title, res)
 
 
 if __name__ == '__main__':
     import fitz
     import time
     import json
-    from typing import List
     from translator import baidu_translator
     main()
