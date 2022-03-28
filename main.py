@@ -1,9 +1,4 @@
-import fitz
-import time
-import json
-from typing import List
 from argparse import ArgumentParser
-from translator import baidu_translator
 parser = ArgumentParser(description='paper tool')
 parser.add_argument('-i', '--input', type=str, help='Input PDF file')
 parser.add_argument('--limit', type=int, default=6000)
@@ -37,10 +32,23 @@ def read_pdf(path: str):
     return res
 
 
-parts = read_pdf(args.input)
-for i, text in enumerate(parts):
-    print(f'translating {i+1}/{len(parts)}')
-    res = baidu_translator(text)
-    with open(f'{i}.json', 'w', encoding='utf-8') as f:
+def main():
+    parts = read_pdf(args.input)
+    res = []
+    for i, text in enumerate(parts):
+        print(f'translating {i+1}/{len(parts)}')
+        r = baidu_translator(text)
+        res += r['trans_result']
+        time.sleep(args.delay)
+    out_filename = args.input.replace('.pdf', '.json')
+    with open(out_filename, 'w', encoding='utf-8') as f:
         json.dump(res, f, ensure_ascii=False)
-    time.sleep(args.delay)
+
+
+if __name__ == '__main__':
+    import fitz
+    import time
+    import json
+    from typing import List
+    from translator import baidu_translator
+    main()
