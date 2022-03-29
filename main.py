@@ -2,16 +2,16 @@ from typing import List
 from argparse import ArgumentParser
 parser = ArgumentParser(description='中英对照论文翻译工具')
 parser.add_argument('file', type=str, help='输入PDF文件')
+parser.add_argument('--edit', action='store_true', help='手动编辑提取的文本')
 parser.add_argument('--limit', type=int, default=6000, help='单次翻译长度限制')
 parser.add_argument('--delay', type=float, default=1, help='等待时间')
 parser.add_argument('--full', action='store_true', help='包括参考文献和其他标记')
 args = parser.parse_args()
 
 
-def read_pdf(path: str):
+def read_pdf(path: str) -> str:
     doc: fitz.Document = fitz.open(path)
-    res = []
-    tmp = ''
+    res = ''
     for page in doc:
         blocks = page.get_text("blocks")
         for block in blocks:
@@ -25,12 +25,20 @@ def read_pdf(path: str):
             if 'REFERENCES' in text:
                 print('skipping references')
                 break
-            if text.startswith('<image:') and args.full is False:
+            if args.full is False and text.startswith('<image:'):
                 continue
-            if len(tmp) + len(text) > args.limit:
-                res.append(tmp)
-                tmp = ''
-            tmp += text+'\n'
+            res += text+'\n'
+    return res
+
+
+def read_txt(text: str) -> List[str]:
+    res: List[str] = []
+    tmp = ''
+    for line in text.split('\n'):
+        if len(tmp) + len(line) > args.limit:
+            res.append(tmp)
+            tmp = ''
+        tmp += line+'\n'
     res.append(tmp)
     return res
 
@@ -46,7 +54,15 @@ def write_html(title: str, data: List):
 
 
 def main():
-    parts = read_pdf(args.file)
+    text = read_pdf(args.file)
+    if args.edit:  # 需要手动编辑的情况
+        text_filename = args.file.replace('.pdf', '.txt')
+        with open(text_filename, 'w', encoding='utf-8') as f:
+            f.write(text)
+        input(f'文件已保存为: {text_filename}, 编辑后按下回车键继续运行')
+        with open(text_filename, 'r', encoding='utf-8') as f:
+            text = f.read()
+    parts = read_txt(text)
     res = []
     for i, text in enumerate(parts):
         print(f'translating {i+1}/{len(parts)}')

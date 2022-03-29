@@ -1,6 +1,7 @@
 __pycache__
 venv
 *.pdf
+*.txt
 *.json
 *.html
 *.spec
