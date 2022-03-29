@@ -3,9 +3,10 @@ venv
 *.pdf
 *.json
 *.html
+*.spec
 key.txt
 node_modules
 pnpm-lock.yaml
+build
 
 !template.html
-!package.json

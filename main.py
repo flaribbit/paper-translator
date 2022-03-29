@@ -4,7 +4,7 @@ parser = ArgumentParser(description='中英对照论文翻译工具')
 parser.add_argument('file', type=str, help='输入PDF文件')
 parser.add_argument('--limit', type=int, default=6000, help='单次翻译长度限制')
 parser.add_argument('--delay', type=float, default=1, help='等待时间')
-parser.add_argument('--full', action='store_true', help='包括参考文献')
+parser.add_argument('--full', action='store_true', help='包括参考文献和其他标记')
 args = parser.parse_args()
 
 
@@ -25,6 +25,8 @@ def read_pdf(path: str):
             if 'REFERENCES' in text:
                 print('skipping references')
                 break
+            if text.startswith('<image:') and args.full is False:
+                continue
             if len(tmp) + len(text) > args.limit:
                 res.append(tmp)
                 tmp = ''
