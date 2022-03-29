@@ -54,23 +54,32 @@ def write_html(title: str, data: List):
 
 
 def main():
-    text = read_pdf(args.file)
-    if args.edit:  # 需要手动编辑的情况
-        text_filename = args.file.replace('.pdf', '.txt')
-        with open(text_filename, 'w', encoding='utf-8') as f:
-            f.write(text)
-        input(f'文件已保存为: {text_filename}, 编辑后按下回车键继续运行')
-        with open(text_filename, 'r', encoding='utf-8') as f:
+    if args.file.endswith('.pdf'):
+        print('正在提取文本')
+        text = read_pdf(args.file)
+        if args.edit:  # 需要手动编辑的情况
+            text_filename = args.file.replace('.pdf', '.txt')
+            with open(text_filename, 'w', encoding='utf-8') as f:
+                f.write(text)
+            input(f'文件已保存为: {text_filename}, 编辑后按下回车键继续运行')
+            with open(text_filename, 'r', encoding='utf-8') as f:
+                text = f.read()
+    elif args.file.endswith('.txt'):
+        with open(args.file, 'r', encoding='utf-8') as f:
             text = f.read()
+    else:
+        raise ValueError('只支持 pdf 和 txt 格式的文件')
+    print('正在分割文本')
     parts = read_txt(text)
     res = []
     for i, text in enumerate(parts):
-        print(f'translating {i+1}/{len(parts)}')
+        print(f'正在翻译 {i+1}/{len(parts)}')
         r = baidu_translator(text)
         res += r['trans_result']
         time.sleep(args.delay)
     title = args.file.replace('.pdf', '')
     write_html(title, res)
+    print(f'文件已保存为: {title}.html')
 
 
 if __name__ == '__main__':
