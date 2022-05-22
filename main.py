@@ -28,6 +28,7 @@ def read_pdf(path: str) -> str:
             if args.full is False and text.startswith('<image:'):
                 continue
             res += text+'\n'
+    res = res.encode('utf-8', 'ignore').decode('utf-8')  # fk msword
     return res
 
 

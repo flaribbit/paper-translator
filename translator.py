@@ -8,8 +8,8 @@ with open('key.txt') as f:
     appid, appkey = f.read().split()
 
 
-def make_md5(s, encoding='utf-8') -> str:
-    return hashlib.md5(s.encode(encoding, errors='surrogateescape')).hexdigest()
+def make_md5(s: str, encoding='utf-8') -> str:
+    return hashlib.md5(s.encode(encoding)).hexdigest()
 
 
 def baidu_translator(query: str) -> Dict[str, Any]:
