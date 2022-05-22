@@ -1,3 +1,4 @@
+from typing import Any, Dict
 import hashlib
 import random
 import requests
@@ -7,11 +8,11 @@ with open('key.txt') as f:
     appid, appkey = f.read().split()
 
 
-def make_md5(s, encoding='utf-8'):
+def make_md5(s, encoding='utf-8') -> str:
     return hashlib.md5(s.encode(encoding, errors='surrogateescape')).hexdigest()
 
 
-def baidu_translator(query: str) -> str:
+def baidu_translator(query: str) -> Dict[str, Any]:
     from_lang = 'en'
     to_lang = 'zh'
     url = 'http://api.fanyi.baidu.com/api/trans/vip/translate'
