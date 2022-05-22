@@ -8,7 +8,7 @@ with open('key.txt') as f:
 
 
 def make_md5(s, encoding='utf-8'):
-    return hashlib.md5(s.encode(encoding)).hexdigest()
+    return hashlib.md5(s.encode(encoding, errors='surrogateescape')).hexdigest()
 
 
 def baidu_translator(query: str) -> str:
@@ -20,7 +20,10 @@ def baidu_translator(query: str) -> str:
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     payload = {'appid': appid, 'q': query, 'from': from_lang, 'to': to_lang, 'salt': salt, 'sign': sign}
     r = requests.post(url, params=payload, headers=headers)
-    return r.json()
+    res = r.json()
+    if 'trans_result' not in res:
+        raise ValueError(res)
+    return res
 
 
 if __name__ == '__main__':
