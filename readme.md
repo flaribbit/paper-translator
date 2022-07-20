@@ -20,3 +20,8 @@ python main.py 英文文档.pdf
 ```sh
 python main.py --edit 英文文档.pdf
 ```
+
+## 关于翻译接口
+百度翻译突然要钱了，欢迎提供更好的/免费的翻译接口：
+
+2022年8月1日起，通用翻译API标准版免费调用量调整为5万字符/月，高级版免费调用量调整为100万字符/月 [查看详情](https://api.fanyi.baidu.com/doc/8)
