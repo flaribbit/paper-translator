@@ -75,8 +75,7 @@ def main():
     res = []
     for i, text in enumerate(parts):
         print(f'正在翻译 {i+1}/{len(parts)}')
-        r = baidu_translator(text)
-        res += r['trans_result']
+        res += translator.super_translator(text)
         time.sleep(args.delay)
     title = args.file.replace('.pdf', '')
     write_html(title, res)
@@ -87,5 +86,8 @@ if __name__ == '__main__':
     import fitz
     import time
     import json
-    from translator import baidu_translator
+    import translator
+    if translator.translator == 'tencent':
+        args.limit = 2000
+        print('提示：腾讯翻译单次只支持2000字符，已自动改变参数')
     main()

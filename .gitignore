@@ -5,7 +5,7 @@ venv
 *.json
 *.html
 *.spec
-key.txt
+key.py
 node_modules
 pnpm-lock.yaml
 build
