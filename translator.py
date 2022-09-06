@@ -2,7 +2,6 @@ from typing import Any, Dict
 import os
 import hashlib
 import random
-import requests
 
 
 if not os.path.isfile('key.py'):
@@ -40,6 +39,7 @@ def make_md5(s: str, encoding='utf-8') -> str:
 
 
 def baidu_translator(query: str) -> Dict[str, Any]:
+    import requests
     from_lang = 'en'
     to_lang = 'zh'
     url = 'http://api.fanyi.baidu.com/api/trans/vip/translate'
